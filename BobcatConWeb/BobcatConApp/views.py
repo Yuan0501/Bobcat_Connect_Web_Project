@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpRequest, HttpResponse
-from .forms import CreateUserForm
+from django.db.models import Q
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from .forms import CreateUserForm, SearchForm, RoommateSearchForm
+from .models import Student, Faculty, Roommate
 
 
 def home(request):
@@ -24,3 +26,47 @@ def register(request):
 
 def logout(request):
     pass
+
+
+def search_people(request):
+    form = SearchForm(request.GET or None)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        results = []
+        if form.is_valid():
+            name = form.cleaned_data.get('name')
+            department = form.cleaned_data.get('department')
+
+            query = Q()
+            if name:
+                query &= Q(name__icontains=name)
+            if department:
+                query &= Q(department=department)
+
+            students = Student.objects.filter(query)
+            faculty = Faculty.objects.filter(query)
+            results = list(students.values('name', 'email', 'department__name')) + list(faculty.values('name', 'email', 'department__name'))
+
+        return JsonResponse({"results": results}, safe=False)
+    else:
+        return render(request, 'search/peoplesearch.html', {'form': form})
+    
+
+def search_roommates(request):
+    form = RoommateSearchForm(request.GET or None)
+    results = None
+    if form.is_valid():
+        move_in_date = form.cleaned_data.get('move_in_date')
+        gender = form.cleaned_data.get('gender')
+        price = form.cleaned_data.get('price')
+
+        queryset = Roommate.objects.all()
+        if move_in_date:
+            queryset = queryset.filter(move_in_date__gte=move_in_date)
+        if gender:
+            queryset = queryset.filter(gender=gender)
+        if price:
+            queryset = queryset.filter(price__lte=price)
+
+        results = queryset
+
+    return render(request, 'search/search_roommates.html', {'form': form, 'results': results})

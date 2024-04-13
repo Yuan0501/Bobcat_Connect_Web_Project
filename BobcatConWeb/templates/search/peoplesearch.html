@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search People</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Sets the font for the entire page */
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #005f73;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #023e8a;
+        }
+
+        #results {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        #results div {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #results div:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #005f73;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Search for Students and Faculty</h1>
+    </header>
+
+    <main>
+        <form id="search-form" method="get">
+            {{ form.as_p }}
+            <button type="submit">Search</button> <!-- Consider hiding if AJAX is meant to be live. -->
+        </form>
+
+        <div id="results">
+            <!-- Results will dynamically populate here -->
+        </div>
+
+        {% if results %}
+            <ul>
+            {% for person in results %}
+                <li>{{ person.name }} - {{ person.email }} - {{ person.department }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>© 2024 Student Activity Website. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchUrl = `{% url 'search_people' %}`; // Set the URL from Django URL resolver
+            const searchForm = document.getElementById('search-form');
+            searchForm.addEventListener('input', function (event) {
+                event.preventDefault(); // Prevent the form from submitting traditionally
+                const formData = new FormData(searchForm);
+                const searchParams = new URLSearchParams();
+                
+                for (const pair of formData) {
+                    searchParams.append(pair[0], pair[1]);
+                }
+    
+                // Use the resolved URL from Django
+                fetch(searchUrl + '?' + searchParams.toString(), {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      const resultsContainer = document.getElementById('results');
+                      resultsContainer.innerHTML = ''; // Clear previous results
+                      data.results.forEach(person => {
+                          const personElement = document.createElement('div');
+                          personElement.textContent = `${person.name} - ${person.email} - ${person.department__name}`;
+                          resultsContainer.appendChild(personElement);
+                      });
+                  }).catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchUrl = `{% url 'search_people' %}`;
+            const searchForm = document.getElementById('search-form');
+            const searchButton = searchForm.querySelector('button[type="submit"]');
+
+            // Function to handle the search
+            function handleSearch(event) {
+                event.preventDefault(); // Prevents traditional form submission and page reload
+
+                const formData = new FormData(searchForm);
+                const searchParams = new URLSearchParams();
+
+                for (const pair of formData) {
+                    searchParams.append(pair[0], pair[1]);
+                }
+
+                fetch(searchUrl + '?' + searchParams.toString(), {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(response => response.json())
+                .then(data => {
+                    const resultsContainer = document.getElementById('results');
+                    resultsContainer.innerHTML = ''; // Clears previous results
+                    data.results.forEach(person => {
+                        const personElement = document.createElement('div');
+                        personElement.textContent = `${person.name} - ${person.email} - ${person.department__name}`;
+                        resultsContainer.appendChild(personElement);
+                    });
+                }).catch(error => console.error('Error:', error)); // Handles errors
+            }
+
+            // Attach event listeners
+            searchForm.addEventListener('input', handleSearch);  // For real-time search on input
+            searchButton.addEventListener('click', handleSearch);  // For button click
+        });
+
+    </script>
+    
+</body>
+</html>
