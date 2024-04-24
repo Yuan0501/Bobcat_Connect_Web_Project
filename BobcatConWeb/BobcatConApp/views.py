@@ -61,7 +61,7 @@ def search_roommates(request):
 
         queryset = Roommate.objects.all()
         if move_in_date:
-            queryset = queryset.filter(move_in_date__gte=move_in_date)
+            queryset = queryset.filter(move_in_date__lte=move_in_date)
         if gender:
             queryset = queryset.filter(gender=gender)
         if price:
