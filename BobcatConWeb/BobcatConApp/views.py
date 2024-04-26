@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, PurchaseBooksForm, TextbookSearchForm
-from .models import Student, Faculty, Roommate, TextBook, Textbook
+from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm
+from .models import Student, Faculty, Roommate, Textbook
 
 
 def home(request):
@@ -48,8 +48,8 @@ def search_people(request):
 
         return JsonResponse({"results": results}, safe=False)
     else:
-        return render(request, 'search/peoplesearch.html', {'form': form})   
-
+        return render(request, 'search/peoplesearch.html', {'form': form})
+    
 
 def search_roommates(request):
     form = RoommateSearchForm(request.GET or None)
@@ -70,3 +70,28 @@ def search_roommates(request):
         results = queryset
 
     return render(request, 'search/search_roommates.html', {'form': form, 'results': results})
+
+
+
+def search_textbook(request):
+    if request.method == 'GET':
+        form = TextbookSearchForm(request.GET)
+        if form.is_valid():
+            search_query = form.cleaned_data['search_query']
+            textbooks = Textbook.objects.filter(title__icontains=search_query)
+            return render(request, 'search/textbook_searchresults.html', {'textbooks': textbooks, 'query': search_query})
+    else:
+        form = TextbookSearchForm()
+    return render(request, 'search/textbook_search.html', {'form': form})
+
+def search_textbook(request):
+    if request.method == 'GET':
+        form = TextbookSearchForm(request.GET)
+        if form.is_valid():
+            search_query = form.cleaned_data['search_query']
+            textbooks = Textbook.objects.filter(title__icontains=search_query) | \
+            Textbook.objects.filter(author__icontains=search_query)
+            return render(request, 'search/textbook_searchresults.html', {'textbooks': textbooks, 'query': search_query})
+    else:
+        form = TextbookSearchForm()
+    return render(request, 'search/textbook_search.html', {'form': form})
