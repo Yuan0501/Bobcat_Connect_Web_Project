@@ -4,7 +4,7 @@ from django.forms import DateInput
 
 
 from django import forms
-from .models import Department
+from .models import Department, TextBook
 
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -21,6 +21,9 @@ class RoommateSearchForm(forms.Form):
     move_in_date = forms.DateField(required=False, widget=DateInput(attrs={'type': 'date'}))
     gender = forms.ChoiceField(choices=(('', 'Any'), ('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')), required=False)
     price = forms.DecimalField(required=False, max_digits=7, decimal_places=2)
+
+class PurchaseBooksForm(forms.Form):
+    title = forms.ModelChoiceField(queryset=TextBook.objects.all(), required=False)
 
 
 class TextbookSearchForm(forms.Form):
