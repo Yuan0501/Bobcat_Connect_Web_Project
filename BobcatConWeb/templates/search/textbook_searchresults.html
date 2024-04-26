@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text book Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #0077b6;
+            color: #ffffff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #0077b6;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Text book Search Results</h1>
+    </header>
+
+    <main>
+        {% if textbooks %}
+        <ul>
+            {% for textbook in textbooks %}
+            <li>
+                <strong>{{ textbook.title }}</strong> - {{ textbook.author }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No textbooks found.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>© 2024 Student Activity Website. All rights reserved.</p>
+    </footer>
+</body>
+</html>
