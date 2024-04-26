@@ -24,4 +24,4 @@ class RoommateSearchForm(forms.Form):
 
 
 class TextbookSearchForm(forms.Form):
-    search_query = forms.CharField(max_length=100, label='Search')
+    search_query = forms.CharField(max_length=100, label='Search', required=False)
