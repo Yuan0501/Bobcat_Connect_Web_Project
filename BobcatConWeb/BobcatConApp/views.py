@@ -23,7 +23,7 @@ def register(request):
         
     context = {'registerform' : form}
     return render(request, 'registration/signup.html', context=context)
- 
+
 
 def logout(request):
     pass
@@ -88,9 +88,48 @@ def search_textbook(request):
 
 def checkout(request):
     if request.method == 'POST':
-        cart_data = json.loads(request.POST.get('cartData'))
-        return render(request, 'checkout.html', {'cart_data': cart_data})
-    return render(request, 'error.html')  # or redirect somewhere appropriate
+        purchase_type = request.POST.get('purchase_type')
+        items = []
+        discount = 0
+        revised_total = 0
+        total = 0
+
+        if purchase_type == 'meal_plan':
+            plan_name = request.POST.get('plan_name')
+            # Convert the price to a float here to avoid TypeError
+            plan_price = float(request.POST.get('plan_price'))
+            total = plan_price
+            items = [{'title': plan_name, 'price': plan_price}]
+            revised_total = total  # No discount for meal plans
+        
+        elif purchase_type == 'textbook':
+            # Convert prices to floats before summing to avoid TypeError
+            cart_data = json.loads(request.POST.get('cartData'))
+            items = cart_data.get('items', [])
+            # Use a list comprehension to ensure all prices are floats
+            total = sum(float(item['price']) for item in items)
+            
+            if total > 200:
+                discount = total * 0.10  # 10% discount
+                revised_total = total - discount
+            else:
+                revised_total = total
+
+        context = {
+            'cart_data': {
+                'items': items,
+                'total': total,
+                'purchase_type': purchase_type,
+            },
+            'total': total,
+            'discount': discount,
+            'revised_total': revised_total,
+        }
+
+        return render(request, 'checkout.html', context)
+    else:
+        return redirect('home')
+
 
 
 def finalize_purchase(request):
@@ -103,17 +142,25 @@ def finalize_purchase(request):
         cvv = int(request.POST.get('cvv'))
         total = float(request.POST.get('total'))
 
+        discount = 0
+        revised_total = total
+
         # Apply discount if applicable
         if total > 200:
-            total *= 0.9  # Apply a 10% discount
+            discount = total * 0.1  # Calculate 10% discount
+            revised_total = total - discount  # Calculate revised total after discount
 
         # Check if the card is valid
         try:
             card = CreditCards.objects.get(cardnumber=cardnumber, name=name, expiry=expiry, cvv=cvv)
-            if card.limitremaining >= total:
-                card.limitremaining -= total
+            if card.limitremaining >= revised_total:
+                card.limitremaining -= revised_total
                 card.save()
-                return render(request, 'purchase_confirmation.html')
+                context = {
+                    'cart_data': {'total': total, 'items': [], 'discount': discount, 'revised_total': revised_total},
+                    # You should actually pass the cart items here too
+                }
+                return render(request, 'purchase_confirmation.html', context)
             else:
                 return render(request, 'error.html', {'message': 'Not enough balance on the card.'})
         except CreditCards.DoesNotExist:
@@ -123,3 +170,40 @@ def finalize_purchase(request):
 
 def purchase_confirmation_view(request):
     return render(request, 'purchase_confirmation.html') 
+
+def meal_plans(request):
+    monthly_price = 600
+    semester_months = 4
+    semester_discount = 0.05
+    semester_price = (monthly_price * semester_months) * (1 - semester_discount)
+
+    context = {
+        'monthly_plan': {
+            'price': monthly_price,
+            'duration': '1 Month'
+        },
+        'semester_plan': {
+            'price': semester_price,
+            'duration': f'{semester_months} Months',
+            'original_price': monthly_price * semester_months,
+            'discount_percentage': semester_discount * 100,
+        }
+    }
+
+    return render(request, 'meals/meal_plan.html', context)
+
+def mealplan_checkout(request):
+    if request.method == 'POST':
+        plan_name = request.POST.get('plan_name')
+        plan_price = request.POST.get('plan_price')
+
+        # Here you can create an order or do whatever is needed with the selected plan
+
+        context = {
+            'plan_name': plan_name,
+            'plan_price': plan_price,
+        }
+        return render(request, 'checkout.html', context)
+    else:
+        # Redirect to meal plans or an error page if this view is accessed without POST data
+        return redirect('meal_plans')

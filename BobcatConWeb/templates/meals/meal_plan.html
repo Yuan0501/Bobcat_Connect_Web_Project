@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Plans</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .plan {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .plan p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .plan button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .plan button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Meal Plan</h1>
+
+        <!-- Monthly Plan -->
+        <div class="plan">
+            <h2>Monthly Plan</h2>
+            <p>Duration: 1 Month</p>
+            <p>Price: $600</p>
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="purchase_type" value="meal_plan">
+                <input type="hidden" name="plan_name" value="Monthly Plan">
+                <input type="hidden" name="plan_price" value="600">
+                <button type="submit">Subscribe to Monthly Plan</button>
+            </form>
+        </div>
+
+        <!-- Semester Plan -->
+        <div class="plan">
+            <h2>Semester Plan</h2>
+            <p>Duration: 4 Months</p>
+            <p>Price: $2280 (5% discount included)</p>
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="purchase_type" value="meal_plan">
+                <input type="hidden" name="plan_name" value="Semester Plan">
+                <input type="hidden" name="plan_price" value="2280">
+                <button type="submit">Subscribe to Semester Plan</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>
