@@ -12,8 +12,7 @@ urlpatterns = [
     path('textbook/search/', views.search_textbook, name='search_textbook'),
     path('checkout/', views.checkout, name='checkout'),
     path('finalize-purchase/', views.finalize_purchase, name='finalize_purchase'),
-    path('purchase_confirmation/', views.purchase_confirmation_view, name='purchase_confirmation'),
-    path('meal-plans/', views.meal_plans, name='meal_plans')
+    path('purchase_confirmation/', views.purchase_confirmation_view, name='purchase_confirmation')
 ]
 
 if settings.DEBUG:

@@ -13,6 +13,7 @@
             padding: 0;
             color: #333;
         }
+
         .container {
             width: 80%;
             margin: 20px auto;
@@ -20,29 +21,35 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1, h2 {
+
+        h1 {
             font-size: 24px;
             color: #333;
         }
+
         ul {
             list-style: none;
             padding: 0;
         }
+
         ul li {
             padding: 10px;
             border-bottom: 1px solid #ccc;
             font-size: 18px;
             color: #666;
         }
+
         ul li:last-child {
             border-bottom: none;
         }
-        .total, .discount, .revised-total {
+
+        .total {
             font-size: 20px;
             font-weight: bold;
             color: #333;
             margin-top: 20px;
         }
+
         button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -53,6 +60,7 @@
             font-size: 16px;
             margin-top: 20px;
         }
+
         button:hover {
             background-color: #0056b3;
         }
@@ -61,6 +69,7 @@
 <body>
     <div class="container">
         <h1>Checkout</h1>
+       <!-- checkout.html -->
         <form action="{% url 'finalize_purchase' %}" method="post">
             {% csrf_token %}
             <h2>Payment Details</h2>
@@ -77,15 +86,9 @@
             <ul>
                 {% for item in cart_data.items %}
                 <li>{{ item.title }} - ${{ item.price }}</li>
-                {% empty %}
-                <li>No items in cart.</li>
                 {% endfor %}
             </ul>
-            <p class="total">Total: ${{ total }}</p>
-            {% if cart_data.purchase_type == 'textbook' and discount %}
-                <p class="discount">Discount: ${{ discount }}</p>
-                <p class="revised-total">Revised Total: ${{ revised_total }}</p>
-            {% endif %}
+            <p class="total">Total: ${{ cart_data.total }}</p>
             <button type="submit">Place Order</button>
         </form>
     </div>
