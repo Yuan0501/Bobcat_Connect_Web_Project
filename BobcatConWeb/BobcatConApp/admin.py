@@ -4,10 +4,11 @@ from django.contrib import admin
 
 
 from django.contrib import admin
-from .models import Department, Student, Faculty, Roommate, Textbook
+from .models import Department, Student, Faculty, Roommate, Textbook, LoginPerson
 
 admin.site.register(Department)
 admin.site.register(Student)
 admin.site.register(Faculty)
 admin.site.register(Roommate)
 admin.site.register(Textbook)
+admin.site.register(LoginPerson)
