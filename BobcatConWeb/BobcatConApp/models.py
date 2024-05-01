@@ -39,8 +39,8 @@ class Roommate(models.Model):
 class Textbook(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    image_url = models.ImageField(upload_to='textbook_images/')
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    image_url = models.ImageField(upload_to='textbook_images/', null=True, blank=True)
 
 class CreditCards(models.Model):
     name = models.TextField()
