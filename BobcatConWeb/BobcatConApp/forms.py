@@ -1,16 +1,31 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.forms import DateInput
+from django import forms
+from django.forms.widgets import PasswordInput, TextInput
 
 
 from django import forms
 from .models import Department
 
 class CreateUserForm(UserCreationForm):
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    address = forms.CharField(max_length=255)
+    city = forms.CharField(max_length=100)
+    state = forms.CharField(max_length=100)
+    zipCode = forms.CharField(max_length=100)
+
     class Meta:
         model = User
-        # fields = ['FirstName', 'LastName', 'Address', 'City', 'State', 'Zipcode', 'Email', 'LoginName', 'Password', 'confirmPassword']
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'address', 'city', 'state', 'zipCode', 'email', 'username', 'password1', 'password2']
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=TextInput)
+    password = forms.CharField(widget=PasswordInput)
+
+
 
 class PeopleSearchForm(forms.Form):
     name = forms.CharField(required=False)

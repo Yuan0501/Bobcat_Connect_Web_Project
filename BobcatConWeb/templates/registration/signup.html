@@ -1,6 +1,58 @@
-<h2>This is signup page</h2>
-<form method="POST" autocomplete="off">
-    {% csrf_token %}
-    {{registerform.as_p}}
-    <input type="submit" value="Signup">
-</form>
+<title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Sets the font for the entire page */
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        main {
+            padding: 40px;
+            margin-top: 5px;
+            margin-left: 40%;
+        }
+
+
+        header {
+            background-color: #005f73;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #005f73;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Register</h1>
+    </header>
+
+    <main>
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
+            {{registerform.as_p}}
+            <input type="submit" value="Signup">
+        </form>
+        
+
+    </main>
+    <footer>
+        <p>© 2024 Student Activity Website. All rights reserved.</p>
+    </footer>
+    
+</body>
+</html>
+

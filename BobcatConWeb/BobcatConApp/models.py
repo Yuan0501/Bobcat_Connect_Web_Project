@@ -1,7 +1,16 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+class LoginPerson(models.Model):
+    userID = models.OneToOneField(User, on_delete = models.CASCADE , related_name='person', primary_key=True)
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zipCode = models.CharField(max_length=100)
+
 
 class Department(models.Model):
     name = models.CharField(max_length=100)

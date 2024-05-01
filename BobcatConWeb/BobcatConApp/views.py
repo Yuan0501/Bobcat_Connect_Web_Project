@@ -1,29 +1,84 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm
-from .models import Student, Faculty, Roommate, Textbook, CreditCards
+from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm
+from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson
 from datetime import datetime
 import json
+from django.contrib import messages
+from django.contrib.auth.models import auth, User
+from django.contrib.auth import authenticate, login, logout
 
 def home(request):
     return render(request, 'registration/homepage.html')
 
 def login(request):
-    return render(request, 'registration/login.html')
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(request, username = username, password = password)
+            if user is not None:
+                auth.login(request, user)
+                return redirect("home")
+    context = {'loginform' : form}
+
+    return render(request, 'registration/login.html', context=context)
+
 
 def register(request):
-    form = CreateUserForm()
+     form = CreateUserForm()
 
-    if request.method == 'POST':
+     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+
+            address = form.cleaned_data.get('address')
+            city = form.cleaned_data.get('city')
+            state = form.cleaned_data.get('state')
+            zipCode = form.cleaned_data.get('zipCode')
+
+            person, create = LoginPerson.objects.get_or_create(userID=user)
+            person.address = address
+            person.city = city
+            person.state = state
+            person.zipCode = zipCode
+            person.save()
             return redirect("login")
         
-    context = {'registerform' : form}
-    return render(request, 'registration/signup.html', context=context)
+     context = {'registerform' : form}
+     return render(request, 'registration/signup.html', context=context)
 
+
+def update_user(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        current_person = request.user.person
+        form_data = {
+            'first_name':current_user.first_name,
+            'last_name' : current_user.last_name,
+            'address' : current_person.address,
+            'city' : current_person.city,
+            'state' : current_person.state,
+            'zipCode' : current_person.zipCode,
+            'Email' : current_user.email,
+            'username' : current_user.username,
+            'password' : current_user.password,
+            'password confirmation' : current_user.password,
+        }
+        update_form = CreateUserForm(request.POST or None, initial=form_data)
+        if update_form.is_valid():
+            update_form.save()
+            return redirect("home")
+        context = {'update_form' : update_form}
+        return render(request,'registration/update.html',context=context)
+    else:
+        messages.success(request, ("you must be logged in to website."))
+        return redirect("home")
+    
 
 def logout(request):
     pass
