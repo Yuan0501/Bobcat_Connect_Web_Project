@@ -3,155 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Textbook Search Results</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Text book Search Results</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        header, footer {
-            text-align: center;
-            padding: 1em 0;
-            background-color: #222;
-            color: #fff;
-        }
-
-        .cart-icon {
-        position: fixed;
-        right: 20px;
-        top: 20px;
-        cursor: pointer;
-        color: #f0f0f0; 
-        text-shadow: 1px 1px 2px black;
-    }
-
-        main {
-            display: flex;
-            justify-content: center;
-            padding: 2em;
-        }
-
-        ul.textbooks {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            list-style: none;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
             padding: 0;
         }
 
-        ul.textbooks li {
-            margin: 1em;
-            flex: 0 1 220px;
-            border: 1px solid #ddd;
-            padding: 1em;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s ease-in-out;
-        }
-
-        ul.textbooks li:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            margin-bottom: 1em;
-        }
-
-        .textbook-title, .textbook-author, .textbook-price {
-            display: block;
-            margin-bottom: 0.5em;
-            font-weight: bold;
-        }
-
-        .textbook-title {
-            color: #007bff;
-        }
-
-        .textbook-author {
-            font-size: 0.9em;
-            color: #555;
-        }
-
-        .textbook-price {
-            color: #28a745;
-        }
-
-        button {
+        header {
+            background-color: #0077b6;
+            color: #ffffff;
             padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-        .cart-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-content {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            width: 300px;
             text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #0077b6;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Textbook Search Results</h1>
+        <h1>Text book Search Results</h1>
     </header>
+
     <main>
-        <div class="cart-icon" onclick="toggleCart()">
-            <i class="fas fa-shopping-cart"></i>
-        </div>
-
-        <form id="buyForm" action="{% url 'checkout' %}" method="post">
-            {% csrf_token %}
-            <div class="cart-overlay" id="cartOverlay">
-                <div class="cart-content">
-                    <h2>Cart Items</h2>
-                    <ul id="cartItemsList">
-                        <!-- Cart items will be dynamically added here -->
-                    </ul>
-                    <p><strong>Total: $</strong><span id="totalPrice">0</span></p>
-                    <input type="hidden" name="cartData" id="cartDataInput">
-                    <button type="button" onclick="toggleCart()">Close</button>
-                    <button type="submit">Buy</button>
-                </div>
-            </div>
-        </form>
-
         {% if textbooks %}
-        <ul class="textbooks">
+        <ul>
             {% for textbook in textbooks %}
             <li>
-                <img src="{{ textbook.image_url.url }}" alt="Cover image of {{ textbook.title }}">
-                <span class="textbook-title">{{ textbook.title }}</span>
-                <span class="textbook-author">by {{ textbook.author }}</span>
-                <span class="textbook-price">$ {{ textbook.price }}</span>
-                <button onclick="addToCart('{{ textbook.title }}', '{{ textbook.price }}')">Add to Cart</button>
+                <strong>{{ textbook.title }}</strong> - {{ textbook.author }}
             </li>
             {% endfor %}
         </ul>
@@ -163,32 +69,5 @@
     <footer>
         <p>© 2024 Student Activity Website. All rights reserved.</p>
     </footer>
-    <script>
-        var cartItems = [];
-
-        function addToCart(title, price) {
-            cartItems.push({title: title, price: price});
-            updateCartOverlay();
-        }
-
-        function updateCartOverlay() {
-            var list = document.getElementById('cartItemsList');
-            list.innerHTML = '';  // Clear current list
-            var total = 0;
-            cartItems.forEach(item => {
-                var li = document.createElement('li');
-                li.textContent = `${item.title} - $${item.price}`;
-                list.appendChild(li);
-                total += parseFloat(item.price);
-            });
-            document.getElementById('totalPrice').textContent = total.toFixed(2);
-            document.getElementById('cartDataInput').value = JSON.stringify({items: cartItems, total: total.toFixed(2)});
-        }
-
-        function toggleCart() {
-            var cartOverlay = document.getElementById('cartOverlay');
-            cartOverlay.style.display = cartOverlay.style.display === 'flex' ? 'none' : 'flex';
-        }
-    </script>
 </body>
 </html>

@@ -99,6 +99,18 @@
             {{ form.as_p }}
             <button type="submit" class="search-button">Search</button>
         </form>
+
+        {% if textbooks %}
+        <ul>
+            {% for textbook in textbooks %}
+            <li>
+                <strong>{{ textbook.title }}</strong> - {{ textbook.author }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No textbooks found.</p>
+        {% endif %}
     </main>
 
     <footer>
