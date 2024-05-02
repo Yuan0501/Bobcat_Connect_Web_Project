@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Events</title>
+    <style>
+        /* CSS styles for selected events */
+        body {
+            font-family: Arial, sans-serif; /* Sets the font for the entire page */
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #005f73;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .event {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #005f73;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Selected Events</h1>
+    </header>
+
+    <main>
+        {% for month, events_in_month in grouped_events.items %}
+            <h2>{{ month }}</h2>
+            <ul>
+                {% for event in events_in_month %}
+                    <li class="event">
+                        {{ event.name }} <br> {{ event.date }} <br> {{ event.time }} <br> Location: {{ event.location }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </main>
+
+    <footer>
+        © 2024 Student Activity Website. All rights reserved.
+    </footer>
+</body>
+</html>

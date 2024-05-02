@@ -6,7 +6,7 @@ from django.forms.widgets import PasswordInput, TextInput
 
 
 from django import forms
-from .models import Department
+from .models import Department, Event
 
 class CreateUserForm(UserCreationForm):
     first_name = forms.CharField(max_length=100)
@@ -40,3 +40,16 @@ class RoommateSearchForm(forms.Form):
 
 class TextbookSearchForm(forms.Form):
     search_query = forms.CharField(max_length=100, label='Search', required=False)
+
+
+class EventFilterForm(forms.Form):
+    start_date = forms.DateField(label='Start Date', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(label='End Date', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+
+class EventSelectionForm(forms.Form):
+    selected_events = forms.ModelMultipleChoiceField(queryset=Event.objects.all(), widget=forms.CheckboxSelectMultiple)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = False

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Student Activity Website</title>
+    <title>Events and Parties</title>
     <style>
         body {
             font-family: Arial, sans-serif; /* Sets the font for the entire page */
@@ -11,38 +11,14 @@
             margin: 0;
             padding: 0;
         }
+
         header {
             background-color: #005f73;
             color: #fff;
             padding: 10px 20px;
             text-align: center;
         }
-       
-        h1 {
-            margin-top: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 10px;
-        }
-        a {
-            text-decoration: none;
-            color: #333;
-        }
-        a:hover {
-            color: #666;
-        }
+
         main {
             padding: 20px;
             margin-top: 10px;
@@ -101,20 +77,53 @@
 </head>
 <body>
     <header>
-        <h1>Welcome, [Username]!</h1>
+        <h1>Events and Parties</h1>
     </header>
-    <div class="container">
-        <h2>Features:</h2>
-        <ul>
-            <li><a href="{% url 'update' %}">Update Information</a></li>
-            <li><a href="{% url 'reset_password' %}">Retrieve Username and Password</a></li>
-            <li><a href="{% url 'search_people' %}">People Searching</a></li>
-            <li><a href="{% url 'search_textbook' %}">Textbook Searching</a></li>
-            <li><a href="{% url 'search_roommates' %}">Roommate Finding</a></li>
-            <li><a href="{% url 'meal_plans' %}">Meal Plan Purchase</a></li>
-            <li><a href="{% url 'events_list' %}">Sports Activities and Parties</a></li>
-        </ul>
-    </div>
+
+    <main>
+        <form method="GET">
+            {{ form.as_p }}
+            <input type="submit" value="Search">
+        </form>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            <h2>Party Events</h2>
+            <ul>
+                {% for party_event in party_events %}
+                    <li>
+                        <input type="checkbox" name="selected_events" value="{{ party_event.id }}">
+                        {{ party_event.name }} - {{ party_event.date }} at {{ party_event.time }} - Location: {{ party_event.location }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <h2>Activity Events</h2>
+            <ul>
+                {% for activity_event in activity_events %}
+                    <li>
+                        <input type="checkbox" name="selected_events" value="{{ activity_event.id }}">
+                        {{ activity_event.name }} - {{ activity_event.date }} at {{ activity_event.time }} - Location: {{ activity_event.location }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Display errors for selection form -->
+            {% if selection_form.errors %}
+            <ul class="errorlist">
+                {% for field, errors in selection_form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field|capfirst }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <button type="submit">Add to calendar</button>
+        </form>
+    </main>
+
     <footer>
         © 2024 Student Activity Website. All rights reserved.
     </footer>

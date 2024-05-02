@@ -60,3 +60,22 @@ class CreditCards(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.cardnumber}"
+    
+
+from django.db import models
+
+class Event(models.Model):
+    CATEGORY_CHOICES = [
+        ('party', 'Party'),
+        ('activity', 'Activity'),
+    ]
+
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    date = models.DateField()
+    time = models.TimeField()
+    location = models.CharField(max_length=200)
+    selected = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
