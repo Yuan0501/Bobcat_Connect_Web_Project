@@ -1,1 +1,116 @@
-<h2>This is Homepage</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #5D5C61;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .menu {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            display: block;
+            z-index: 1000;
+        }
+        .menu-icon {
+            display: block;
+            width: 30px;
+            height: 5px;
+            margin-bottom: 5px;
+            background-color: #333;
+            transition: background-color 0.3s ease;
+        }
+        .menu:hover .menu-icon {
+            background-color: #666;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        .dropdown-content a {
+            color: black;
+            text-decoration: none;
+            display: block;
+            padding: 8px;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var menu = document.querySelector('.menu');
+            var dropdown = document.querySelector('.dropdown-content');
+            menu.onclick = function() {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            };
+            // Optional: Click outside the menu to close it
+            window.onclick = function(event) {
+                if (!event.target.matches('.menu, .menu *')) {
+                    dropdown.style.display = 'none';
+                }
+            };
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome {{ full_name }}</h1>
+        <div>
+            <a href="{% url 'search_textbook' %}" class="btn">Search Textbooks</a>
+            <a href="{% url 'meal_plans' %}" class="btn">Meal Plans</a>
+            <a href="{% url 'search_people' %}" class="btn">Search People</a>
+            <a href="{% url 'search_roommates' %}" class="btn">Search Roommates</a>
+        </div>
+        <div class="menu">
+            <div class="menu-icon"></div>
+            <div class="menu-icon"></div>
+            <div class="menu-icon"></div>
+        </div>
+        <div class="dropdown-content">
+            <a href="{% url 'update' %}">Update Profile</a>
+            <a href="{% url 'reset_password' %}">Reset Password</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </div>
+</body>
+</html>

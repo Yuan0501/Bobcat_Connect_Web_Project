@@ -7,10 +7,18 @@ from datetime import datetime
 import json
 from django.contrib import messages
 from django.contrib.auth.models import auth, User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
 
+@login_required
 def home(request):
-    return render(request, 'registration/homepage.html')
+    first_name = request.user.first_name
+    last_name = request.user.last_name
+    context = {
+        'full_name': f"{first_name} {last_name}"
+    }
+    return render(request, 'registration/homepage.html', context)
 
 def login(request):
     form = LoginForm()
@@ -26,7 +34,6 @@ def login(request):
     context = {'loginform' : form}
 
     return render(request, 'registration/login.html', context=context)
-
 
 def register(request):
      form = CreateUserForm()
@@ -53,6 +60,7 @@ def register(request):
      return render(request, 'registration/signup.html', context=context)
 
 
+@login_required
 def update_user(request):
     if request.user.is_authenticated:
         current_user = User.objects.get(id=request.user.id)
@@ -79,11 +87,13 @@ def update_user(request):
         messages.success(request, ("you must be logged in to website."))
         return redirect("home")
     
+@login_required
+def logout_view(request):
+    auth_logout(request)  # This logs the user out
+    return redirect('login')  # Redirect to login page or home page after logout
 
-def logout(request):
-    pass
 
-
+@login_required
 def search_people(request):
     form = PeopleSearchForm(request.GET or None)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -107,6 +117,7 @@ def search_people(request):
         return render(request, 'search/peoplesearch.html', {'form': form})
     
 
+@login_required
 def search_roommates(request):
     form = RoommateSearchForm(request.GET or None)
     results = None
@@ -129,6 +140,7 @@ def search_roommates(request):
 
 
 
+@login_required
 def search_textbook(request):
     form = TextbookSearchForm(request.GET or None)
     if request.method == 'GET' and form.is_valid():
@@ -141,6 +153,8 @@ def search_textbook(request):
         return render(request, 'search/textbook_searchresults.html', {'textbooks': textbooks, 'query': search_query})
     return render(request, 'search/textbook_search.html', {'form': form})
 
+
+@login_required
 def checkout(request):
     if request.method == 'POST':
         purchase_type = request.POST.get('purchase_type')
@@ -187,6 +201,7 @@ def checkout(request):
 
 
 
+@login_required
 def finalize_purchase(request):
     if request.method == 'POST':
         # Retrieve payment details from form
@@ -223,9 +238,13 @@ def finalize_purchase(request):
 
     return render(request, 'error.html', {'message': 'Invalid request.'})
 
+
+@login_required
 def purchase_confirmation_view(request):
     return render(request, 'purchase_confirmation.html') 
 
+
+@login_required
 def meal_plans(request):
     monthly_price = 600
     semester_months = 4
@@ -247,6 +266,8 @@ def meal_plans(request):
 
     return render(request, 'meals/meal_plan.html', context)
 
+
+@login_required
 def mealplan_checkout(request):
     if request.method == 'POST':
         plan_name = request.POST.get('plan_name')
