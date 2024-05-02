@@ -67,6 +67,7 @@ class TextbookPurchaseHistory(models.Model):
     quantity = models.IntegerField()
     purchase_date = models.DateTimeField(auto_now_add=True)
     total_price = models.FloatField()
+    transaction_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} purchased {self.quantity} of {self.textbook.title}"
@@ -76,6 +77,18 @@ class MealplanPurchaseHistory(models.Model):
     meal_plan_name = models.CharField(max_length=100)
     purchase_date = models.DateTimeField(auto_now_add=True)
     price = models.FloatField()
+    transaction_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} purchased {self.meal_plan_name} plan"
+    
+class TicketPurchaseHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    zones = models.CharField(max_length=100)  # Store selected zones as a comma-separated string
+    number_of_tickets = models.IntegerField()
+    bus_card_purchase_option = models.BooleanField(default=False)  # True if bus card purchased, False otherwise
+    transaction_date = models.DateTimeField(auto_now_add=True)
+    total_price = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} purchased {self.number_of_tickets} tickets"

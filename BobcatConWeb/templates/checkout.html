@@ -82,13 +82,20 @@
                 {% for item in cart_data.items %}
                     <input type="hidden" name="plan_names[]" value="{{ item.title }}">
                 {% endfor %}
+            {% elif cart_data.purchase_type == 'bus_ticket' %}
+                <input type="hidden" name="zones" value="{{ ticket_purchase.zones }}">
+                <input type="hidden" name="number_of_tickets" value="{{ ticket_purchase.number_of_tickets }}">
+                <input type="hidden" name="bus_card_purchase_option" value="{{ ticket_purchase.bus_card_purchase_option }}">
             {% endif %}
             <h2>Cart Items</h2>
             <ul>
                 {% for item in cart_data.items %}
-                <li>{{ item.title }} - ${{ item.price }}</li>
-                {% empty %}
-                <li>No items in cart.</li>
+                    <li>{{ item.title }} - ${{ item.price }}</li>
+                    {% if item.bus_card_option %}
+                        <li>Bus Card Purchase - $40.00</li>
+                    {% endif %}
+                    {% empty %}
+                    <li>No items in cart.</li>
                 {% endfor %}
             </ul>
             <p class="total">Total: ${{ total }}</p>

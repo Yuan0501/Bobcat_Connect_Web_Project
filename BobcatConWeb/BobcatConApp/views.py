@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm
-from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, TextbookPurchaseHistory, MealplanPurchaseHistory
+from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, TextbookPurchaseHistory, MealplanPurchaseHistory, TicketPurchaseHistory
 from datetime import datetime
 import json
 from django.contrib import messages
@@ -164,6 +164,7 @@ def checkout(request):
         discount = 0
         revised_total = 0
         total = 0
+        ticket_purchase = []
 
         if purchase_type == 'meal_plan':
             plan_name = request.POST.get('plan_name')
@@ -185,6 +186,17 @@ def checkout(request):
                 revised_total = total - discount
             else:
                 revised_total = total
+        elif purchase_type == 'bus_ticket':
+            zones = request.POST.get('zones')
+            number_of_tickets = int(request.POST.get('number_of_tickets'))
+            zone_price = get_zone_price(zones, number_of_tickets)
+            bus_card_purchase_option = 'bus_card' in request.POST
+            total = calculate_ticket_price(zones, number_of_tickets, bus_card_purchase_option)
+
+            items.append({'title': f"{number_of_tickets} Tickets for {zones}", 'price': zone_price, 'id': None, 'bus_card_option':bus_card_purchase_option})
+            revised_total = total
+
+            ticket_purchase = ({'zones': zones, 'number_of_tickets': number_of_tickets, 'bus_card_purchase_option': bus_card_purchase_option})
 
         context = {
             'cart_data': {
@@ -195,6 +207,7 @@ def checkout(request):
             'total': total,
             'discount': discount,
             'revised_total': revised_total,
+            'ticket_purchase': ticket_purchase
         }
 
         return render(request, 'checkout.html', context)
@@ -251,7 +264,17 @@ def finalize_purchase(request):
                             meal_plan_name=item,
                             price=total  # Using the original total as the price for meal plans
                         )
-
+                elif purchase_type == 'bus_ticket':
+                    zones = request.POST.get('zones')
+                    number_of_tickets = int(request.POST.get('number_of_tickets'))
+                    bus_card_purchase_option = 'bus_card_purchase_option' in request.POST
+                    TicketPurchaseHistory.objects.create(
+                        user = request.user,
+                        zones = zones,
+                        number_of_tickets = number_of_tickets,
+                        bus_card_purchase_option = bus_card_purchase_option,
+                        total_price = total
+                    )
                 # Update card balance
                 card.limitremaining = Decimal(card.limitremaining) - Decimal(revised_total)
                 card.save()
@@ -319,9 +342,27 @@ def purchase_history(request):
     # Fetch purchase history for textbooks and meal plans
     textbook_history = TextbookPurchaseHistory.objects.filter(user=request.user)
     mealplan_history = MealplanPurchaseHistory.objects.filter(user=request.user)
+    ticket_history = TicketPurchaseHistory.objects.filter(user=request.user)
 
     context = {
         'textbook_history': textbook_history,
         'mealplan_history': mealplan_history,
+        'ticket_history': ticket_history
     }
     return render(request, 'purchase_history.html', context)
+
+@login_required
+def ticket_purchase(request):
+    return render(request, 'bus_ticket/ticket_purchase.html')
+
+def calculate_ticket_price(zones, number_of_tickets, bus_card_purchase_option):
+    zone_prices = {'Zone 1': 2, 'Zone 2': 4, 'Zone 3': 6}
+    price = sum(zone_prices[zone] * number_of_tickets for zone in zones.split(','))
+    if bus_card_purchase_option:
+        price += 40  # Price of the bus card
+    return Decimal(price)
+
+def get_zone_price(zones, number_of_tickets):
+    zone_prices = {'Zone 1': 2, 'Zone 2': 4, 'Zone 3': 6}
+    price = sum(zone_prices[zone] * number_of_tickets for zone in zones.split(','))
+    return Decimal(price)

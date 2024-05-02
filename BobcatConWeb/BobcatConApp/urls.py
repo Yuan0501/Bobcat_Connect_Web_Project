@@ -21,7 +21,8 @@ urlpatterns = [
     path('finalize-purchase/', views.finalize_purchase, name='finalize_purchase'),
     path('purchase_confirmation/', views.purchase_confirmation_view, name='purchase_confirmation'),
     path('meal-plans/', views.meal_plans, name='meal_plans'),
-    path('purchase-history/', views.purchase_history, name='purchase_history')
+    path('purchase-history/', views.purchase_history, name='purchase_history'),
+    path('bus-ticket-purchase/', views.ticket_purchase, name='ticket_purchase')
 ]
 
 if settings.DEBUG:

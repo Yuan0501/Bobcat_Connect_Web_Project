@@ -71,6 +71,7 @@
                     <th>Title</th>
                     <th>Quantity</th>
                     <th>Total Price</th>
+                    <th>Purchase Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,6 +80,7 @@
                     <td>{{ purchase.textbook.title }}</td>
                     <td>{{ purchase.quantity }}</td>
                     <td>${{ purchase.total_price }}</td>
+                    <td>{{ purchase.transaction_date }} UTC</td>
                 </tr>
                 {% empty %}
                 <tr><td colspan="3" class="no-history">No textbook purchase history.</td></tr>
@@ -93,6 +95,7 @@
                 <tr>
                     <th>Plan Name</th>
                     <th>Price</th>
+                    <th>Purchase Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,9 +103,35 @@
                 <tr>
                     <td>{{ purchase.meal_plan_name }}</td>
                     <td>${{ purchase.price }}</td>
+                    <td>{{ purchase.transaction_date }} UTC</td>
                 </tr>
                 {% empty %}
                 <tr><td colspan="2" class="no-history">No meal plan purchase history.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Bus Ticket Purchase History</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Zones</th>
+                    <th>Number of Tickets</th>
+                    <th>Bus Card Prchased?</th>
+                    <th>Total Price</th>
+                    <th>Purchase Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for purchase in ticket_history %}
+                <tr>
+                    <td>{{ purchase.zones }}</td>
+                    <td>{{ purchase.number_of_tickets }}</td>
+                    <td>{{ purchase.bus_card_purchase_option }}</td>
+                    <td>${{ purchase.total_price }}</td>
+                    <td>{{ purchase.transaction_date }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="2" class="no-history">No bus ticket purchase history.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
