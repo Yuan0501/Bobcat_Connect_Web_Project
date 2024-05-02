@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events and Parties</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Sets the font for the entire page */
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #005f73;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #023e8a;
+        }
+
+        #results {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        #results div {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #results div:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #005f73;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Events and Parties</h1>
+    </header>
+
+    <main>
+        <form method="GET">
+            {{ form.as_p }}
+            <input type="submit" value="Search">
+        </form>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            <h2>Party Events</h2>
+            <ul>
+                {% for party_event in party_events %}
+                    <li>
+                        <input type="checkbox" name="selected_events" value="{{ party_event.id }}">
+                        {{ party_event.name }} - {{ party_event.date }} at {{ party_event.time }} - Location: {{ party_event.location }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <h2>Activity Events</h2>
+            <ul>
+                {% for activity_event in activity_events %}
+                    <li>
+                        <input type="checkbox" name="selected_events" value="{{ activity_event.id }}">
+                        {{ activity_event.name }} - {{ activity_event.date }} at {{ activity_event.time }} - Location: {{ activity_event.location }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Display errors for selection form -->
+            {% if selection_form.errors %}
+            <ul class="errorlist">
+                {% for field, errors in selection_form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field|capfirst }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <button type="submit">Add to calendar</button>
+        </form>
+    </main>
+
+    <footer>
+        © 2024 Student Activity Website. All rights reserved.
+    </footer>
+</body>
+</html>

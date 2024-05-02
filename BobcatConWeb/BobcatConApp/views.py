@@ -1,17 +1,29 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
+<<<<<<< HEAD
 from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm
 from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, TextbookPurchaseHistory, MealplanPurchaseHistory, TicketPurchaseHistory
+=======
+from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm, EventFilterForm, EventSelectionForm
+from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, Event
+>>>>>>> events_search
 from datetime import datetime
 import json
 from django.contrib import messages
 from django.contrib.auth.models import auth, User
+<<<<<<< HEAD
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.http import Http404
 from decimal import Decimal
+=======
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
+import itertools
+
+>>>>>>> events_search
 
 @login_required
 def home(request):
@@ -337,6 +349,7 @@ def mealplan_checkout(request):
         # Redirect to meal plans or an error page if this view is accessed without POST data
         return redirect('meal_plans')
     
+<<<<<<< HEAD
 @login_required
 def purchase_history(request):
     # Fetch purchase history for textbooks and meal plans
@@ -366,3 +379,64 @@ def get_zone_price(zones, number_of_tickets):
     zone_prices = {'Zone 1': 2, 'Zone 2': 4, 'Zone 3': 6}
     price = sum(zone_prices[zone] * number_of_tickets for zone in zones.split(','))
     return Decimal(price)
+=======
+def events_list(request):
+    # Handle event filtering
+    form = EventFilterForm(request.GET)
+    party_events = Event.objects.filter(category='party')
+    activity_events = Event.objects.filter(category='activity')
+
+    if form.is_valid():
+        start_date = form.cleaned_data.get('start_date')
+        end_date = form.cleaned_data.get('end_date')
+        if start_date and end_date:
+            party_events = party_events.filter(date__range=[start_date, end_date])
+            activity_events = activity_events.filter(date__range=[start_date, end_date])
+        
+    # Handle event selection
+    if request.method == 'POST':
+        print("POST data:", request.POST)
+        selection_form = EventSelectionForm(request.POST)
+        if selection_form.is_valid():
+            print("here")
+            print("Selection form is valid")
+            print("Selected event IDs:", selection_form.cleaned_data.get('selected_events'))
+            selected_event_ids = selection_form.cleaned_data.get('selected_events')
+            selected_events = Event.objects.filter(id__in=selected_event_ids)
+            print(selected_events)
+            # Process selected events here
+            # For example, you can mark them as selected in the database
+            for event in selected_events:
+                event.selected = True
+                event.save()
+            # Redirect to the page displaying selected events
+            return redirect('selected_events')
+        else:
+            print(selection_form.errors)
+            return render(request, 'events.html', {
+                'party_events': party_events,
+                'activity_events': activity_events,
+                'form': form,
+                'selection_form': selection_form
+            })
+    else:
+        selection_form = EventSelectionForm()
+
+    return render(request, 'events.html', {
+        'party_events': party_events,
+        'activity_events': activity_events,
+        'form': form,
+        'selection_form': selection_form
+    })
+
+
+def selected_events(request):
+    selected_events = Event.objects.filter(selected=True).order_by('date')  # Assuming you have a 'selected' field in your Event model
+    grouped_events = {}
+
+    # Group selected events by month
+    for month, events_in_month in itertools.groupby(selected_events, key=lambda event: event.date.strftime('%B %Y')):
+        grouped_events[month] = list(events_in_month)
+
+    return render(request, 'selected_events.html', {'grouped_events': grouped_events})
+>>>>>>> events_search
