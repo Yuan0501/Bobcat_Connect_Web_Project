@@ -60,3 +60,22 @@ class CreditCards(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.cardnumber}"
+    
+class TextbookPurchaseHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    textbook = models.ForeignKey(Textbook, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    purchase_date = models.DateTimeField(auto_now_add=True)
+    total_price = models.FloatField()
+
+    def __str__(self):
+        return f"{self.user.username} purchased {self.quantity} of {self.textbook.title}"
+
+class MealplanPurchaseHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    meal_plan_name = models.CharField(max_length=100)
+    purchase_date = models.DateTimeField(auto_now_add=True)
+    price = models.FloatField()
+
+    def __str__(self):
+        return f"{self.user.username} purchased {self.meal_plan_name} plan"

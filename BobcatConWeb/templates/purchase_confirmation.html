@@ -44,6 +44,19 @@
             font-weight: bold;
             color: #555;
         }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -51,5 +64,7 @@
         <h1>Purchase Confirmation</h1>
         <p>Your purchase has been successfully confirmed!</p>
     </div>
+
+    <a href="{% url 'purchase_history' %}" class="btn">View Purchase History</a>
 </body>
 </html>

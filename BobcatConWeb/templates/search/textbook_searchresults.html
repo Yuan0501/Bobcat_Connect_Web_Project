@@ -161,7 +161,7 @@
                 <span class="textbook-title">{{ textbook.title }}</span>
                 <span class="textbook-author">by {{ textbook.author }}</span>
                 <span class="textbook-price">$ {{ textbook.price }}</span>
-                <button onclick="addToCart('{{ textbook.title }}', '{{ textbook.price }}')">Add to Cart</button>
+                <button onclick="addToCart('{{ textbook.title }}', '{{ textbook.price }}', '{{ textbook.id }}')">Add to Cart</button>
             </li>
             {% endfor %}
         </ul>
@@ -175,12 +175,12 @@
     </footer>
     <script>
         var cartItems = [];
-
-        function addToCart(title, price) {
-            cartItems.push({title: title, price: price});
+    
+        function addToCart(title, price, id) {
+            cartItems.push({title: title, price: price, id: id});
             updateCartOverlay();
         }
-
+    
         function updateCartOverlay() {
             var list = document.getElementById('cartItemsList');
             list.innerHTML = '';  // Clear current list
@@ -192,9 +192,14 @@
                 total += parseFloat(item.price);
             });
             document.getElementById('totalPrice').textContent = total.toFixed(2);
-            document.getElementById('cartDataInput').value = JSON.stringify({items: cartItems, total: total.toFixed(2)});
+    
+            // Create an array of textbook IDs
+            var textbookIds = cartItems.map(item => item.id);
+            console.log("Textbook IDs in cart:", textbookIds);
+            // Update hidden input with JSON string containing cart data and IDs
+            document.getElementById('cartDataInput').value = JSON.stringify({items: cartItems, total: total.toFixed(2), textbook_ids: textbookIds});
         }
-
+    
         function toggleCart() {
             var cartOverlay = document.getElementById('cartOverlay');
             cartOverlay.style.display = cartOverlay.style.display === 'flex' ? 'none' : 'flex';

@@ -73,6 +73,16 @@
             <label for="cvv">CVV:</label>
             <input type="number" id="cvv" name="cvv" required>
             <input type="hidden" id="total" name="total" value="{{ cart_data.total }}">
+            <input type="hidden" id="purchase_type" name="purchase_type" value="{{ cart_data.purchase_type }}">
+            {% if cart_data.purchase_type == 'textbook' %}
+                {% for item in cart_data.items %}
+                    <input type="hidden" name="textbook_ids[]" value="{{ item.id }}">
+                {% endfor %}
+            {% elif cart_data.purchase_type == 'meal_plan' %}
+                {% for item in cart_data.items %}
+                    <input type="hidden" name="plan_names[]" value="{{ item.title }}">
+                {% endfor %}
+            {% endif %}
             <h2>Cart Items</h2>
             <ul>
                 {% for item in cart_data.items %}

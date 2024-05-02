@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm
-from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson
+from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, TextbookPurchaseHistory, MealplanPurchaseHistory
 from datetime import datetime
 import json
 from django.contrib import messages
@@ -10,6 +10,8 @@ from django.contrib.auth.models import auth, User
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.http import Http404
+from decimal import Decimal
 
 @login_required
 def home(request):
@@ -165,21 +167,21 @@ def checkout(request):
 
         if purchase_type == 'meal_plan':
             plan_name = request.POST.get('plan_name')
-            # Convert the price to a float here to avoid TypeError
             plan_price = float(request.POST.get('plan_price'))
             total = plan_price
             items = [{'title': plan_name, 'price': plan_price}]
-            revised_total = total  # No discount for meal plans
-        
+            revised_total = total
         elif purchase_type == 'textbook':
-            # Convert prices to floats before summing to avoid TypeError
             cart_data = json.loads(request.POST.get('cartData'))
-            items = cart_data.get('items', [])
-            # Use a list comprehension to ensure all prices are floats
-            total = sum(float(item['price']) for item in items)
-            
-            if total > 200:
-                discount = total * 0.10  # 10% discount
+            textbook_ids = cart_data.get('textbook_ids', [])  # Retrieve textbook IDs from the cart data
+            textbooks = Textbook.objects.filter(id__in=textbook_ids)  # Fetch textbooks using the IDs
+            if not textbooks.exists():
+                raise Http404("Textbooks not found.")
+            for textbook in textbooks:
+                items.append({'title': textbook.title, 'price': textbook.price, 'id': textbook.id})
+            total = sum(item['price'] for item in items)
+            if total > Decimal('200'):
+                discount = total * Decimal('0.10')  # Convert 0.10 to Decimal
                 revised_total = total - discount
             else:
                 revised_total = total
@@ -197,6 +199,7 @@ def checkout(request):
 
         return render(request, 'checkout.html', context)
     else:
+        # Handle GET request or redirect if needed
         return redirect('home')
 
 
@@ -204,31 +207,57 @@ def checkout(request):
 @login_required
 def finalize_purchase(request):
     if request.method == 'POST':
-        # Retrieve payment details from form
+        # Retrieve payment and purchase type details from the form
         name = request.POST.get('name')
         cardnumber = request.POST.get('cardnumber')
         exp = datetime.strptime(request.POST.get('expiry'), '%Y-%m-%d').date()
         expiry = exp.strftime('%Y-%m')
         cvv = int(request.POST.get('cvv'))
         total = float(request.POST.get('total'))
+        purchase_type = request.POST.get('purchase_type')  # This should be either 'textbook' or 'meal_plan'
 
         discount = 0
         revised_total = total
 
-        # Apply discount if applicable
-        if total > 200:
-            discount = total * 0.1  # Calculate 10% discount
-            revised_total = total - discount  # Calculate revised total after discount
-
         # Check if the card is valid
         try:
             card = CreditCards.objects.get(cardnumber=cardnumber, name=name, expiry=expiry, cvv=cvv)
-            if card.limitremaining >= revised_total:
-                card.limitremaining -= revised_total
+            if card.limitremaining >= total:
+                if purchase_type == 'textbook':
+                    for item in request.POST.getlist('textbook_ids[]'):
+                        textbook = Textbook.objects.get(id=item)
+                        # Assuming the price of each textbook is fixed and available in the database
+                        total_price = textbook.price
+                        discount_rate = Decimal('0.10')
+                        # Apply discount if total price is greater than 200
+                        if total > 200:
+                            discount = total_price * discount_rate  # Calculate 10% discount
+                            revised_total = total_price - discount  # Calculate revised total after discount
+                        else:
+                            revised_total = total_price
+                        
+                        # Record each textbook purchase with a discount if applicable
+                        TextbookPurchaseHistory.objects.create(
+                            user=request.user,
+                            textbook=textbook,
+                            quantity=1,  # Assuming quantity is one if not specified
+                            total_price=total_price
+                        )
+                elif purchase_type == 'meal_plan':
+                    # No discount for meal plans
+                    for item in request.POST.getlist('plan_names[]'):
+                        MealplanPurchaseHistory.objects.create(
+                            user=request.user,
+                            meal_plan_name=item,
+                            price=total  # Using the original total as the price for meal plans
+                        )
+
+                # Update card balance
+                card.limitremaining = Decimal(card.limitremaining) - Decimal(revised_total)
                 card.save()
+
                 context = {
                     'cart_data': {'total': total, 'items': [], 'discount': discount, 'revised_total': revised_total},
-                    # You should actually pass the cart items here too
                 }
                 return render(request, 'purchase_confirmation.html', context)
             else:
@@ -237,6 +266,7 @@ def finalize_purchase(request):
             return render(request, 'error.html', {'message': 'Invalid card details.'})
 
     return render(request, 'error.html', {'message': 'Invalid request.'})
+
 
 
 @login_required
@@ -283,3 +313,15 @@ def mealplan_checkout(request):
     else:
         # Redirect to meal plans or an error page if this view is accessed without POST data
         return redirect('meal_plans')
+    
+@login_required
+def purchase_history(request):
+    # Fetch purchase history for textbooks and meal plans
+    textbook_history = TextbookPurchaseHistory.objects.filter(user=request.user)
+    mealplan_history = MealplanPurchaseHistory.objects.filter(user=request.user)
+
+    context = {
+        'textbook_history': textbook_history,
+        'mealplan_history': mealplan_history,
+    }
+    return render(request, 'purchase_history.html', context)

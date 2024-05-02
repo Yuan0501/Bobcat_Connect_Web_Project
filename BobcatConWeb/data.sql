@@ -23,6 +23,9 @@ INSERT INTO django_migrations VALUES(19,'BobcatConApp','0001_initial','2024-04-1
 INSERT INTO django_migrations VALUES(20,'BobcatConApp','0002_roommate','2024-04-13 17:18:55.192636');
 INSERT INTO django_migrations VALUES(21,'BobcatConApp','0003_textbooks','2024-04-25 20:22:06.760919');
 INSERT INTO django_migrations VALUES(22,'BobcatConApp','0004_textbook_delete_textbooks','2024-04-25 20:22:53.349595');
+INSERT INTO django_migrations VALUES(23,'BobcatConApp','0005_creditcards_textbook_image_url_textbook_price','2024-05-01 06:08:06.050154');
+INSERT INTO django_migrations VALUES(24,'BobcatConApp','0006_loginperson','2024-05-01 15:37:46.157124');
+INSERT INTO django_migrations VALUES(25,'BobcatConApp','0007_mealplanpurchasehistory_textbookpurchasehistory','2024-05-02 06:09:06.621776');
 CREATE TABLE IF NOT EXISTS "auth_group_permissions" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "group_id" integer NOT NULL REFERENCES "auth_group" ("id") DEFERRABLE INITIALLY DEFERRED, "permission_id" integer NOT NULL REFERENCES "auth_permission" ("id") DEFERRABLE INITIALLY DEFERRED);
 CREATE TABLE IF NOT EXISTS "auth_user_groups" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "group_id" integer NOT NULL REFERENCES "auth_group" ("id") DEFERRABLE INITIALLY DEFERRED);
 CREATE TABLE IF NOT EXISTS "auth_user_user_permissions" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "permission_id" integer NOT NULL REFERENCES "auth_permission" ("id") DEFERRABLE INITIALLY DEFERRED);
@@ -124,6 +127,10 @@ INSERT INTO django_content_type VALUES(9,'BobcatConApp','department');
 INSERT INTO django_content_type VALUES(10,'BobcatConApp','roommate');
 INSERT INTO django_content_type VALUES(11,'BobcatConApp','textbooks');
 INSERT INTO django_content_type VALUES(12,'BobcatConApp','textbook');
+INSERT INTO django_content_type VALUES(13,'BobcatConApp','creditcards');
+INSERT INTO django_content_type VALUES(14,'BobcatConApp','loginperson');
+INSERT INTO django_content_type VALUES(15,'BobcatConApp','textbookpurchasehistory');
+INSERT INTO django_content_type VALUES(16,'BobcatConApp','mealplanpurchasehistory');
 CREATE TABLE IF NOT EXISTS "auth_permission" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "content_type_id" integer NOT NULL REFERENCES "django_content_type" ("id") DEFERRABLE INITIALLY DEFERRED, "codename" varchar(100) NOT NULL, "name" varchar(255) NOT NULL);
 INSERT INTO auth_permission VALUES(1,1,'add_logentry','Can add log entry');
 INSERT INTO auth_permission VALUES(2,1,'change_logentry','Can change log entry');
@@ -173,13 +180,33 @@ INSERT INTO auth_permission VALUES(45,12,'add_textbook','Can add textbook');
 INSERT INTO auth_permission VALUES(46,12,'change_textbook','Can change textbook');
 INSERT INTO auth_permission VALUES(47,12,'delete_textbook','Can delete textbook');
 INSERT INTO auth_permission VALUES(48,12,'view_textbook','Can view textbook');
+INSERT INTO auth_permission VALUES(49,13,'add_creditcards','Can add credit cards');
+INSERT INTO auth_permission VALUES(50,13,'change_creditcards','Can change credit cards');
+INSERT INTO auth_permission VALUES(51,13,'delete_creditcards','Can delete credit cards');
+INSERT INTO auth_permission VALUES(52,13,'view_creditcards','Can view credit cards');
+INSERT INTO auth_permission VALUES(53,14,'add_loginperson','Can add login person');
+INSERT INTO auth_permission VALUES(54,14,'change_loginperson','Can change login person');
+INSERT INTO auth_permission VALUES(55,14,'delete_loginperson','Can delete login person');
+INSERT INTO auth_permission VALUES(56,14,'view_loginperson','Can view login person');
+INSERT INTO auth_permission VALUES(57,15,'add_textbookpurchasehistory','Can add textbook purchase history');
+INSERT INTO auth_permission VALUES(58,15,'change_textbookpurchasehistory','Can change textbook purchase history');
+INSERT INTO auth_permission VALUES(59,15,'delete_textbookpurchasehistory','Can delete textbook purchase history');
+INSERT INTO auth_permission VALUES(60,15,'view_textbookpurchasehistory','Can view textbook purchase history');
+INSERT INTO auth_permission VALUES(61,16,'add_mealplanpurchasehistory','Can add mealplan purchase history');
+INSERT INTO auth_permission VALUES(62,16,'change_mealplanpurchasehistory','Can change mealplan purchase history');
+INSERT INTO auth_permission VALUES(63,16,'delete_mealplanpurchasehistory','Can delete mealplan purchase history');
+INSERT INTO auth_permission VALUES(64,16,'view_mealplanpurchasehistory','Can view mealplan purchase history');
 CREATE TABLE IF NOT EXISTS "auth_group" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(150) NOT NULL UNIQUE);
 CREATE TABLE IF NOT EXISTS "auth_user" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "password" varchar(128) NOT NULL, "last_login" datetime NULL, "is_superuser" bool NOT NULL, "username" varchar(150) NOT NULL UNIQUE, "last_name" varchar(150) NOT NULL, "email" varchar(254) NOT NULL, "is_staff" bool NOT NULL, "is_active" bool NOT NULL, "date_joined" datetime NOT NULL, "first_name" varchar(150) NOT NULL);
 INSERT INTO auth_user VALUES(1,'pbkdf2_sha256$600000$iM1lLKymvaZDS4k46HIbaw$5MFhuLLmXV373a6b4IgQO2PIgn91h5lgkFf2py33pfg=','2024-04-25 20:30:06.111817',1,'jaya','','yxv11@txstate.edu',1,1,'2024-04-13 03:13:49.722961','');
-INSERT INTO auth_user VALUES(2,'pbkdf2_sha256$720000$XpQ2kZapoflyjlWbfZfIqu$E5T98C+XvU19CTcQn9cdlk+4L/rejmKcoAzRkkD8A9g=',NULL,0,'Prasanna','','prasannadittakavi@gmail.com',0,1,'2024-04-26 04:07:56.144830','');
+INSERT INTO auth_user VALUES(3,'pbkdf2_sha256$600000$zyUZuaI6QFRAl4ewiOVbKR$TVPdBAw767KXpazBioESNvf+r0l9RRrnxWyJ1oQvWWA=','2024-05-02 04:29:15.799992',1,'yuanyuan','','yz09844@gmail.com',1,1,'2024-05-02 04:27:39.761359','');
+INSERT INTO auth_user VALUES(4,'pbkdf2_sha256$600000$3ccFTOJD26jM0TlIwvvoM8$G4yEhv4RWPzljM+IgTjusK81acX4TaZ33o7klATzyRA=','2024-05-02 04:42:30.979606',0,'BobAus','Austin','yz123@gmail.com',0,1,'2024-05-02 04:31:59.723526','Bobcat');
+INSERT INTO auth_user VALUES(5,'pbkdf2_sha256$720000$nUURklkf2PGJwktwhLCfsl$qeMhYu76opZbId6hf5cwWYfrcVNVwCk0eUxGFac5siE=','2024-05-02 07:48:22.902850',0,'Prasanna','Dittakavi','prasannadittakavi@gmail.com',0,1,'2024-05-02 05:11:52.184961','Prasanna Lakshmi');
 CREATE TABLE IF NOT EXISTS "django_session" ("session_key" varchar(40) NOT NULL PRIMARY KEY, "session_data" text NOT NULL, "expire_date" datetime NOT NULL);
 INSERT INTO django_session VALUES('vlt2whxc4wrtreyijugt814dupmz1cj0','.eJxVjEEOwiAQRe_C2hBoGQou3XsGMjOAVA0kpV0Z765NutDtf-_9lwi4rSVsPS1hjuIstDj9boT8SHUH8Y711iS3ui4zyV2RB-3y2mJ6Xg7376BgL9-aQaNVCcY8DuAsK-8hWsPam8kpMjA48sQODKLNOhEqsFFnP7nMRE68P8ZgN7A:1rvTrR:Ac_kG8E-0HmLe0rGeVF-2NugyZCKun0WhW5actOyCVc','2024-04-27 03:15:25.579356');
 INSERT INTO django_session VALUES('3y6ve3y7sgfy94u7g7xmsjfwmyrpoe2g','.eJxVjEEOwiAQRe_C2hBoGQou3XsGMjOAVA0kpV0Z765NutDtf-_9lwi4rSVsPS1hjuIstDj9boT8SHUH8Y711iS3ui4zyV2RB-3y2mJ6Xg7376BgL9-aQaNVCcY8DuAsK-8hWsPam8kpMjA48sQODKLNOhEqsFFnP7nMRE68P8ZgN7A:1s05jK:DXZOzukIz5aKQ9Sdk8daNPEp3GnRWISVWFUoCXlQKxc','2024-05-09 20:30:06.113762');
+INSERT INTO django_session VALUES('n9p100z574sw0o9cl84scs2whrs36zjp','.eJxVjc0OwiAQhN-FszZl6VLw6N1nIAu7Wn9STGmjifHdReNBrzPzffNQgZZ5CEuRKRxZbVSnVr9ZpHSW8V3wicZDblIe5-kYm_ek-bal2WWWy_a7_RMMVIZKa_G9AUMsbLREwlRZ79ChTmxbrZkII6NjayP0vjNo9gQC-w4q-pFeqZRbnjhMUmQOc65vVZ0sL6f7ugUWwJ7BJgLndd9idAbbTixY8qieL2r_TKM:1s2OKG:Ng0JSTqMOo1-G6X0u1lRWzA2pvCwaL7DxHg9AIPyW1g','2024-05-16 04:45:44.387186');
+INSERT INTO django_session VALUES('wc4afkf5gtvyzvg37vk01d73cjqftgn9','.eJxVjDsOwyAQRO9CHaHlZ3DK9D4DWmAJTiIsGbuKcvdgyUUy5Zs382Ye9634vdHq58SuzLDLLwsYn1SPIj2w3hcel7qtc-CHws-28WlJ9Lqd7t9BwVb6ehTKIEZKTssehIxusM5BliRBZgUi0BiFoc6SAusGMkDaCmdi0Ip9vtAMNws:1s2RB0:L42ERcoR8mlvFlzgtLIfcHhS56ksgbmkVkIve4zhFOc','2024-05-16 07:48:22.903735');
 CREATE TABLE IF NOT EXISTS "BobcatConApp_department" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(100) NOT NULL);
 INSERT INTO BobcatConApp_department VALUES(1,'Computer Science');
 INSERT INTO BobcatConApp_department VALUES(2,'Accounting');
@@ -258,45 +285,50 @@ INSERT INTO BobcatConApp_roommate VALUES(3,'Prasanna Lakshmi Dittakavi','pl@txst
 INSERT INTO BobcatConApp_roommate VALUES(4,'Yuanyuan Zhu','yz@txstate.du','2024-04-14','Female',280);
 INSERT INTO BobcatConApp_roommate VALUES(5,'Akshitha Addagatla','aa@txstate.edu','2024-04-21','Female',400);
 INSERT INTO BobcatConApp_roommate VALUES(6,'Ajay Bethireddy','ab@txstate.edu','2024-04-16','Male',300);
-CREATE TABLE IF NOT EXISTS "BobcatConApp_textbook" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(200) NOT NULL, "author" varchar(100) NOT NULL, price REAL NOT NULL DEFAULT 0, "image_url" VARCHAR(255));
-INSERT INTO BobcatConApp_textbook VALUES(1,'Deep Learning: Foundations and Concepts','Christopher M. Bishop, Hugh Bishop',30.0,'1.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(2,'Learn Python Programming, 3rd edition: An in-depth introduction to the fundamentals of Python, Third Edition','Fabrizio Romano, Heinrich Kruger',25.0,'2.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(3,'Machine Learning for Beginners: An Introduction to Artificial Intelligence and Machine Learning','John Slavio',20.0,'3.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(4,'Computer Science Principles: The Foundational Concepts of Computer Science','Kevin Hare',22.0,'4.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(5,'Software Requirements Specifications: A How To Guide for Project Staff','David Tuffley',15.0,'5.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(6,'Basic Physics: A Self-Teaching Guide, 3rd Edition','Karl F. Kuhn, Frank Noschese',18.0,'6.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(7,'Chemistry: Concepts and Problems, A Self-Teaching Guide, 3rd Edition','Richard Post, Chad Snyder, Clifford C. Houk',28.0,'7.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(8,'Biology: A Self-Teaching Guide, 3rd Edition: A Self-Teaching Guide','Steven D. Garber',35.0,'8.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(9,'Advanced Math ACT: A Must Have if Going for 30+','Joseph Hammerman',40.0,'9.jpg');
-INSERT INTO BobcatConApp_textbook VALUES(10,'The History of the Ancient World: From the Earliest Accounts to the Fall of Rome','Susan Wise Bauer',45.0,'10.jpg');
-CREATE TABLE BobcatConApp_creditcards (
-    Name TEXT,
-    CardNumber TEXT,
-    Expiry TEXT, -- Change the data type to TEXT
-    CVV INTEGER,
-    LimitRemaining REAL,
-    Id INTEGER
-);
-INSERT INTO BobcatConApp_creditcards VALUES('John Doe','1234567812345678','2024-12',123,4753.0,1);
-INSERT INTO BobcatConApp_creditcards VALUES('Alice Smith','8765432187654321','2025-11',321,7500.0,2);
-INSERT INTO BobcatConApp_creditcards VALUES('Bob Johnson','4567123485612345','2023-10',456,6200.0,3);
-INSERT INTO BobcatConApp_creditcards VALUES('Emma Wilson','2345678923456789','2026-01',234,3000.0,4);
-INSERT INTO BobcatConApp_creditcards VALUES('Noah Miller','5678904567890456','2024-08',567,4500.0,5);
-INSERT INTO BobcatConApp_creditcards VALUES('Olivia Brown','7890123478901234','2025-05',890,5000.0,6);
-INSERT INTO BobcatConApp_creditcards VALUES('James Davis','9012345690123456','2027-07',123,5500.0,7);
-INSERT INTO BobcatConApp_creditcards VALUES('Isabella Garcia','1234098712340987','2023-12',678,3500.0,8);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_textbook" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" varchar(200) NOT NULL,
+    "author" varchar(100) NOT NULL
+, "image_url" varchar(100) NULL, "price" decimal NULL);
+INSERT INTO BobcatConApp_textbook VALUES(1,'Deep Learning: Foundations and Concepts','Christopher M. Bishop, Hugh Bishop','1.jpg',24);
+INSERT INTO BobcatConApp_textbook VALUES(2,'Learn Python Programming, 3rd edition: An in-depth introduction to the fundamentals of Python, Third Edition','Fabrizio Romano, Heinrich Kruger','2.jpg',22);
+INSERT INTO BobcatConApp_textbook VALUES(3,'Machine Learning for Beginners: An Introduction to Artificial Intelligence and Machine Learning','John Slavio','3.jpg',33);
+INSERT INTO BobcatConApp_textbook VALUES(4,'Computer Science Principles: The Foundational Concepts of Computer Science','Kevin Hare','4.jpg',10);
+INSERT INTO BobcatConApp_textbook VALUES(5,'Software Requirements Specifications: A How To Guide for Project Staff','David Tuffley','5.jpg',36);
+INSERT INTO BobcatConApp_textbook VALUES(6,'Basic Physics: A Self-Teaching Guide, 3rd Edition','Karl F. Kuhn, Frank Noschese','6.jpg',27);
+INSERT INTO BobcatConApp_textbook VALUES(7,'Chemistry: Concepts and Problems, A Self-Teaching Guide, 3rd Edition','Richard Post, Chad Snyder, Clifford C. Houk','7.jpg',13);
+INSERT INTO BobcatConApp_textbook VALUES(8,'Biology: A Self-Teaching Guide, 3rd Edition: A Self-Teaching Guide','Steven D. Garber','8.jpg',49);
+INSERT INTO BobcatConApp_textbook VALUES(9,'Advanced Math ACT: A Must Have if Going for 30+','Joseph Hammerman','9.jpg',49);
+INSERT INTO BobcatConApp_textbook VALUES(10,'The History of the Ancient World: From the Earliest Accounts to the Fall of Rome','Susan Wise Bauer','10.jpg',37);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_creditcards" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" text NOT NULL, "cardnumber" text NOT NULL, "expiry" text NOT NULL, "cvv" integer NOT NULL, "limitremaining" real NOT NULL);
+INSERT INTO BobcatConApp_creditcards VALUES(1,'John Doe','1234567812345678','2024-12',123,4753.0);
+INSERT INTO BobcatConApp_creditcards VALUES(2,'Alice Smith','8765432187654321','2025-11',321,7500.0);
+INSERT INTO BobcatConApp_creditcards VALUES(3,'Bob Johnson','4567123485612345','2023-10',456,6200.0);
+INSERT INTO BobcatConApp_creditcards VALUES(4,'Emma Wilson','2345678923456789','2026-01',234,3000.0);
+INSERT INTO BobcatConApp_creditcards VALUES(5,'Noah Miller','5678904567890456','2024-08',567,4500.0);
+INSERT INTO BobcatConApp_creditcards VALUES(6,'Olivia Brown','7890123478901234','2025-05',890,5000.0);
+INSERT INTO BobcatConApp_creditcards VALUES(7,'James Davis','9012345690123456','2027-07',123,5500.0);
+INSERT INTO BobcatConApp_creditcards VALUES(8,'Isabella Garcia','1234098712340987','2023-12',678,3500.0);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_loginperson" ("userID_id" integer NOT NULL PRIMARY KEY REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "address" varchar(255) NOT NULL, "city" varchar(100) NOT NULL, "state" varchar(100) NOT NULL, "zipCode" varchar(100) NOT NULL);
+INSERT INTO BobcatConApp_loginperson VALUES(4,'108 Foxroll cove','San Marcos','Texas','78634');
+INSERT INTO BobcatConApp_loginperson VALUES(5,'8214 Menlo Park Pl','Round Rock','Texas','78681');
+CREATE TABLE IF NOT EXISTS "BobcatConApp_mealplanpurchasehistory" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "meal_plan_name" varchar(100) NOT NULL, "purchase_date" datetime NOT NULL, "price" real NOT NULL, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_textbookpurchasehistory" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "quantity" integer NOT NULL, "purchase_date" datetime NOT NULL, "total_price" real NOT NULL, "textbook_id" bigint NOT NULL REFERENCES "BobcatConApp_textbook" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
 DELETE FROM sqlite_sequence;
-INSERT INTO sqlite_sequence VALUES('django_migrations',22);
+INSERT INTO sqlite_sequence VALUES('django_migrations',25);
 INSERT INTO sqlite_sequence VALUES('django_admin_log',84);
-INSERT INTO sqlite_sequence VALUES('django_content_type',12);
-INSERT INTO sqlite_sequence VALUES('auth_permission',48);
+INSERT INTO sqlite_sequence VALUES('django_content_type',16);
+INSERT INTO sqlite_sequence VALUES('auth_permission',64);
 INSERT INTO sqlite_sequence VALUES('auth_group',0);
-INSERT INTO sqlite_sequence VALUES('auth_user',2);
+INSERT INTO sqlite_sequence VALUES('auth_user',5);
 INSERT INTO sqlite_sequence VALUES('BobcatConApp_department',48);
 INSERT INTO sqlite_sequence VALUES('BobcatConApp_faculty',10);
 INSERT INTO sqlite_sequence VALUES('BobcatConApp_student',10);
 INSERT INTO sqlite_sequence VALUES('BobcatConApp_roommate',6);
 INSERT INTO sqlite_sequence VALUES('BobcatConApp_textbook',10);
+INSERT INTO sqlite_sequence VALUES('BobcatConApp_creditcards',8);
+INSERT INTO sqlite_sequence VALUES('BobcatConApp_mealplanpurchasehistory',5);
+INSERT INTO sqlite_sequence VALUES('BobcatConApp_textbookpurchasehistory',31);
 CREATE UNIQUE INDEX "auth_group_permissions_group_id_permission_id_0cd325b0_uniq" ON "auth_group_permissions" ("group_id", "permission_id");
 CREATE INDEX "auth_group_permissions_group_id_b120cbf9" ON "auth_group_permissions" ("group_id");
 CREATE INDEX "auth_group_permissions_permission_id_84c5c92e" ON "auth_group_permissions" ("permission_id");
@@ -314,4 +346,7 @@ CREATE INDEX "auth_permission_content_type_id_2f476e4b" ON "auth_permission" ("c
 CREATE INDEX "django_session_expire_date_a5c62663" ON "django_session" ("expire_date");
 CREATE INDEX "BobcatConApp_student_department_id_b6a262f9" ON "BobcatConApp_student" ("department_id");
 CREATE INDEX "BobcatConApp_faculty_department_id_214c3e04" ON "BobcatConApp_faculty" ("department_id");
+CREATE INDEX "BobcatConApp_mealplanpurchasehistory_user_id_f66bb754" ON "BobcatConApp_mealplanpurchasehistory" ("user_id");
+CREATE INDEX "BobcatConApp_textbookpurchasehistory_textbook_id_dbe98a72" ON "BobcatConApp_textbookpurchasehistory" ("textbook_id");
+CREATE INDEX "BobcatConApp_textbookpurchasehistory_user_id_5dd5a40a" ON "BobcatConApp_textbookpurchasehistory" ("user_id");
 COMMIT;

@@ -30,12 +30,15 @@ CREATE TABLE IF NOT EXISTS "BobcatConApp_faculty" ("id" integer NOT NULL PRIMARY
 CREATE INDEX "BobcatConApp_student_department_id_b6a262f9" ON "BobcatConApp_student" ("department_id");
 CREATE INDEX "BobcatConApp_faculty_department_id_214c3e04" ON "BobcatConApp_faculty" ("department_id");
 CREATE TABLE IF NOT EXISTS "BobcatConApp_roommate" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(100) NOT NULL, "email" varchar(254) NOT NULL, "move_in_date" date NOT NULL, "gender" varchar(10) NOT NULL, "price" decimal NOT NULL);
-CREATE TABLE IF NOT EXISTS "BobcatConApp_textbook" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(200) NOT NULL, "author" varchar(100) NOT NULL, price REAL NOT NULL DEFAULT 0, "image_url" VARCHAR(255));
-CREATE TABLE BobcatConApp_creditcards (
-    Name TEXT,
-    CardNumber TEXT,
-    Expiry TEXT, -- Change the data type to TEXT
-    CVV INTEGER,
-    LimitRemaining REAL,
-    Id INTEGER
-);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_textbook" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" varchar(200) NOT NULL,
+    "author" varchar(100) NOT NULL
+, "image_url" varchar(100) NULL, "price" decimal NULL);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_creditcards" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" text NOT NULL, "cardnumber" text NOT NULL, "expiry" text NOT NULL, "cvv" integer NOT NULL, "limitremaining" real NOT NULL);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_loginperson" ("userID_id" integer NOT NULL PRIMARY KEY REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "address" varchar(255) NOT NULL, "city" varchar(100) NOT NULL, "state" varchar(100) NOT NULL, "zipCode" varchar(100) NOT NULL);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_mealplanpurchasehistory" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "meal_plan_name" varchar(100) NOT NULL, "purchase_date" datetime NOT NULL, "price" real NOT NULL, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE IF NOT EXISTS "BobcatConApp_textbookpurchasehistory" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "quantity" integer NOT NULL, "purchase_date" datetime NOT NULL, "total_price" real NOT NULL, "textbook_id" bigint NOT NULL REFERENCES "BobcatConApp_textbook" ("id") DEFERRABLE INITIALLY DEFERRED, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "BobcatConApp_mealplanpurchasehistory_user_id_f66bb754" ON "BobcatConApp_mealplanpurchasehistory" ("user_id");
+CREATE INDEX "BobcatConApp_textbookpurchasehistory_textbook_id_dbe98a72" ON "BobcatConApp_textbookpurchasehistory" ("textbook_id");
+CREATE INDEX "BobcatConApp_textbookpurchasehistory_user_id_5dd5a40a" ON "BobcatConApp_textbookpurchasehistory" ("user_id");
