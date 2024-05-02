@@ -21,13 +21,10 @@ urlpatterns = [
     path('finalize-purchase/', views.finalize_purchase, name='finalize_purchase'),
     path('purchase_confirmation/', views.purchase_confirmation_view, name='purchase_confirmation'),
     path('meal-plans/', views.meal_plans, name='meal_plans'),
-<<<<<<< HEAD
     path('purchase-history/', views.purchase_history, name='purchase_history'),
-    path('bus-ticket-purchase/', views.ticket_purchase, name='ticket_purchase')
-=======
+    path('bus-ticket-purchase/', views.ticket_purchase, name='ticket_purchase'),
     path('events/', views.events_list, name='events_list'),
     path('selected-events/', views.selected_events, name='selected_events')
->>>>>>> events_search
 ]
 
 if settings.DEBUG:

@@ -61,7 +61,6 @@ class CreditCards(models.Model):
     def __str__(self):
         return f"{self.name} - {self.cardnumber}"
     
-<<<<<<< HEAD
 class TextbookPurchaseHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     textbook = models.ForeignKey(Textbook, on_delete=models.CASCADE)
@@ -93,7 +92,6 @@ class TicketPurchaseHistory(models.Model):
 
     def __str__(self):
         return f"{self.user.username} purchased {self.number_of_tickets} tickets"
-=======
 
 from django.db import models
 
@@ -112,4 +110,3 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
->>>>>>> events_search

@@ -1,29 +1,21 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
-<<<<<<< HEAD
-from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm
-from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, TextbookPurchaseHistory, MealplanPurchaseHistory, TicketPurchaseHistory
-=======
 from .forms import CreateUserForm, PeopleSearchForm, RoommateSearchForm, TextbookSearchForm, LoginForm, EventFilterForm, EventSelectionForm
-from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, Event
->>>>>>> events_search
+from .models import Student, Faculty, Roommate, Textbook, CreditCards, LoginPerson, TextbookPurchaseHistory, MealplanPurchaseHistory, TicketPurchaseHistory, Event
 from datetime import datetime
 import json
 from django.contrib import messages
 from django.contrib.auth.models import auth, User
-<<<<<<< HEAD
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.http import Http404
 from decimal import Decimal
-=======
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 import itertools
 
->>>>>>> events_search
 
 @login_required
 def home(request):
@@ -349,7 +341,6 @@ def mealplan_checkout(request):
         # Redirect to meal plans or an error page if this view is accessed without POST data
         return redirect('meal_plans')
     
-<<<<<<< HEAD
 @login_required
 def purchase_history(request):
     # Fetch purchase history for textbooks and meal plans
@@ -379,7 +370,6 @@ def get_zone_price(zones, number_of_tickets):
     zone_prices = {'Zone 1': 2, 'Zone 2': 4, 'Zone 3': 6}
     price = sum(zone_prices[zone] * number_of_tickets for zone in zones.split(','))
     return Decimal(price)
-=======
 def events_list(request):
     # Handle event filtering
     form = EventFilterForm(request.GET)
@@ -439,4 +429,3 @@ def selected_events(request):
         grouped_events[month] = list(events_in_month)
 
     return render(request, 'selected_events.html', {'grouped_events': grouped_events})
->>>>>>> events_search
