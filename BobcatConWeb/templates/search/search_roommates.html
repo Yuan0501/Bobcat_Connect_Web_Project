@@ -13,7 +13,7 @@
         }
 
         header {
-            background-color: #0077b6;
+            background-color:  #005f73;
             color: #ffffff;
             padding: 10px 20px;
             text-align: center;
@@ -61,11 +61,16 @@
         footer {
             text-align: center;
             padding: 10px 20px;
-            background-color: #0077b6;
+            background-color: #005f73;
             color: white;
             position: fixed;
             bottom: 0;
             width: 100%;
+        }
+        .home-link {
+            position: fixed;
+            top: 20px; /* Adjust top distance as needed */
+            right: 20px; /* Adjust right distance as needed */
         }
     </style>
 </head>
@@ -73,7 +78,7 @@
     <header>
         <h1>Search for Roommates</h1>
     </header>
-
+    <a href="/" class="home-link">Home</a>
     <main>
         <form method="get">
             {{ form.as_p }}
@@ -97,7 +102,7 @@
     </main>
 
     <footer>
-        <p>© 2024 Roommate Finder. All rights reserved.</p>
+        <p> © 2024 Bobcat Connect.</p>
     </footer>
 </body>
 </html>

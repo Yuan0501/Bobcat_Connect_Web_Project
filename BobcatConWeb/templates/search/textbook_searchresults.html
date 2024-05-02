@@ -16,7 +16,7 @@
         header, footer {
             text-align: center;
             padding: 1em 0;
-            background-color: #222;
+            background-color: #005f73;
             color: #fff;
         }
 
@@ -125,12 +125,18 @@
             max-height: 200px;  /* Adjust height as needed */
             margin-bottom: 20px;  /* Provides spacing between the list and the buttons */
         }
+        .home-link {
+            position: fixed;
+            top: 80px; /* Adjust top distance as needed */
+            right: 20px; /* Adjust right distance as needed */
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Textbook Search Results</h1>
     </header>
+    <a href="/" class="home-link">Home</a>
     <main>
         <div class="cart-icon" onclick="toggleCart()">
             <i class="fas fa-shopping-cart"></i>
@@ -171,7 +177,7 @@
     </main>
 
     <footer>
-        <p>© 2024 Student Activity Website. All rights reserved.</p>
+        <p> © 2024 Bobcat Connect.</p>
     </footer>
     <script>
         var cartItems = [];

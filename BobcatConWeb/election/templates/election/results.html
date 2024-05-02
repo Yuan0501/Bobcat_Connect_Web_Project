@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selected Events</title>
+    <title>Events and Parties</title>
     <style>
-        /* CSS styles for selected events */
         body {
             font-family: Arial, sans-serif; /* Sets the font for the entire page */
             background-color: #f4f4f9;
@@ -25,20 +24,44 @@
             margin-top: 10px;
         }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
+        form {
+            margin-bottom: 20px;
         }
 
-        li {
-            margin-bottom: 10px;
+        input, select {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
-        .event {
-            background-color: #f9f9f9;
+        button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #023e8a;
+        }
+
+        #results {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #results div {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #results div:last-child {
+            border-bottom: none;
         }
 
         footer {
@@ -50,6 +73,7 @@
             bottom: 0;
             width: 100%;
         }
+
         .home-link {
             position: fixed;
             top: 20px; /* Adjust top distance as needed */
@@ -57,28 +81,14 @@
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <h1>Selected Events</h1>
-    </header>
-    <a href="/" class="home-link">Home</a>
-   
+<h1>{{ question.question_text }}</h1>
 
-    <main>
-        {% for month, events_in_month in grouped_events.items %}
-            <h2>{{ month }}</h2>
-            <ul>
-                {% for event in events_in_month %}
-                    <li class="event">
-                        {{ event.name }} <br> {{ event.date }} <br> {{ event.time }} <br> Location: {{ event.location }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
-    </main>
-
-    <footer>
-        <p> © 2024 Bobcat Connect.</p>
-    </footer>
+<ul>
+{% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+{% endfor %}
+</ul>
 </body>
 </html>

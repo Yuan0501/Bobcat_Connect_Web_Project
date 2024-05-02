@@ -4,7 +4,7 @@ from django.contrib import admin
 
 
 from django.contrib import admin
-from .models import Department, Student, Faculty, Roommate, Textbook, LoginPerson
+from .models import Department, Student, Faculty, Roommate, Textbook, LoginPerson, Event
 
 admin.site.register(Department)
 admin.site.register(Student)
@@ -12,3 +12,4 @@ admin.site.register(Faculty)
 admin.site.register(Roommate)
 admin.site.register(Textbook)
 admin.site.register(LoginPerson)
+admin.site.register(Event)

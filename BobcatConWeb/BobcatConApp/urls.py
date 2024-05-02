@@ -25,6 +25,7 @@ urlpatterns = [
     path('bus-ticket-purchase/', views.ticket_purchase, name='ticket_purchase'),
     path('events/', views.events_list, name='events_list'),
     path('selected-events/', views.selected_events, name='selected_events')
+    
 ]
 
 if settings.DEBUG:

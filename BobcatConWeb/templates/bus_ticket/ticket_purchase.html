@@ -39,9 +39,32 @@
         button:hover {
             background-color: #0056b3;
         }
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #005f73;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        header {
+            background-color: #005f73;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .home-link {
+            position: fixed;
+            top: 20px; /* Adjust top distance as needed */
+            right: 20px; /* Adjust right distance as needed */
+        }
     </style>
 </head>
 <body>
+    <header>Bus Tickets</header>
+    <a href="/" class="home-link">Home</a>
+   
     <div class="container">
         <h1>Purchase Bus Tickets</h1>
         <form action="{% url 'checkout' %}" method="post">
@@ -59,5 +82,8 @@
             <button type="submit">Proceed to Checkout</button>
         </form>
     </div>
+    <footer>
+        <p> © 2024 Bobcat Connect.</p>
+    </footer>
 </body>
 </html>

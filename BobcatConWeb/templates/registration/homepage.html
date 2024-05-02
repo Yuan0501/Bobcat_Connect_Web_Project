@@ -6,10 +6,10 @@
     <title>Home</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
+            font-family: Arial, sans-serif; /* Sets the font for the entire page */
             background-color: #f4f4f9;
-            color: #333;
+            margin: 0;
+            padding: 0;
         }
         .container {
             width: 90%;
@@ -21,7 +21,7 @@
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #5D5C61;
+            color: white;
             text-align: center;
         }
         .btn {
@@ -29,10 +29,18 @@
             padding: 10px 20px;
             margin: 10px;
             border-radius: 5px;
-            background-color: #4CAF50;
+            background-color: #0077b6;
             color: white;
             text-decoration: none;
             text-align: center;
+        }
+        button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
         }
         .btn:hover {
             background-color: #45a049;
@@ -75,6 +83,21 @@
         .dropdown-content a:hover {
             background-color: #f1f1f1;
         }
+        footer {
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #005f73;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        header {
+            background-color: #005f73;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -93,15 +116,20 @@
     </script>
 </head>
 <body>
+    <header>
+        <h1>Bobcat Connect</h1>
+    </header>
     <div class="container">
-        <h1>Welcome {{ full_name }}</h1>
+        <h1>Services</h1>
         <div>
-            <a href="{% url 'search_textbook' %}" class="btn">Search Textbooks</a>
-            <a href="{% url 'meal_plans' %}" class="btn">Meal Plans</a>
             <a href="{% url 'search_people' %}" class="btn">Search People</a>
             <a href="{% url 'search_roommates' %}" class="btn">Search Roommates</a>
+            <a href="{% url 'search_textbook' %}" class="btn">Search Textbooks</a>
+            <a href="{% url 'events_list' %}" class="btn">Activities and Parties</a> 
+            <a href="{% url 'meal_plans' %}" class="btn">Meal Plans</a>           
             <a href="{% url 'ticket_purchase' %}" class="btn">Purchase a Bus Ticket</a>
             <a href="{% url 'purchase_history' %}" class="btn">View Purchase History</a>
+            <a href="{% url 'selected_events' %}" class="btn">calendar</a>
         </div>
         <div class="menu">
             <div class="menu-icon"></div>
@@ -114,5 +142,8 @@
             <a href="{% url 'logout' %}">Logout</a>
         </div>
     </div>
+    <footer>
+        © 2024 Bobcat Connect.
+    </footer>
 </body>
 </html>

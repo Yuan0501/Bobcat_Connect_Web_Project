@@ -73,13 +73,21 @@
             bottom: 0;
             width: 100%;
         }
+
+        .home-link {
+            position: fixed;
+            top: 20px; /* Adjust top distance as needed */
+            right: 20px; /* Adjust right distance as needed */
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Events and Parties</h1>
+       
     </header>
-
+    <a href="/" class="home-link">Home</a>
+   
     <main>
         <form method="GET">
             {{ form.as_p }}
@@ -125,7 +133,7 @@
     </main>
 
     <footer>
-        © 2024 Student Activity Website. All rights reserved.
+        © 2024 Bobcat Connect.
     </footer>
 </body>
 </html>
