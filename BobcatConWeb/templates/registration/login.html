@@ -38,6 +38,9 @@
             bottom: 0;
             width: 100%;
         }
+        a {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +53,10 @@
             {% csrf_token %}
             {{loginform.as_p}}
             <input type="submit" value="login">
+            <a href="register">Register</a>
+            <a href="reset_password">Forget password?</a>
         </form>
+        
 
     </main>
     <footer>
